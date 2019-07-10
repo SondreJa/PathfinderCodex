@@ -1,0 +1,45 @@
+{
+  "name": "Aberrant Whispers",
+  "level": 3,
+  "type": "Power",
+  "action": "Normal",
+  "castings": "Somatic, Verbal",
+  "range": 15,
+  "area": "Aura",
+  "targets": "Each enemy in the area",
+  "duration": {
+    "interval": 1,
+    "durationType": "Round",
+    "isDismissable": false,
+    "isConcentration": false
+  },
+  "traits": [
+    "Auditory",
+    "Enchantment",
+    "Mental"
+  ],
+  "isHeightenable": false,
+  "description": "You utter phrases in an unknown tongue, assaulting the minds of those nearby. The effect is based on the result of the target’s Will save. Regardless of the result of each target’s save, each target is bolstered against castings of *aberrant whispers*.  **Success** The target is unaffected.  **Failure** The target is stupefied 2.  **Critical Failure** The target is confused."
+}
+
+{
+  "name": "Aberrant Whispers",
+  "level": 3,
+  "type": "Power",
+  "action": "Normal",
+  "castings": "Somatic, Verbal",
+  "range": 15,
+  "area": "Aura",
+  "targets": "Each enemy in the area",
+  "duration": {
+    "interval": 1,
+    "durationType": "Unlimited",
+    "isDismissable": true,
+    "isConcentration": true
+  },
+  "traits": [
+    "string"
+  ],
+  "isHeightenable": true,
+  "description": "string"
+}
