@@ -1,0 +1,28 @@
+﻿@model IEnumerable<BackOffice.Models.SpellViewModel>
+@using BackOffice.Models.Spells
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div id="accordion">
+    @foreach(var item in Model)
+    {
+        string spellHeader = $"{item.Name} | {item.Type}";
+        if (item.Type != SpellType.Cantrip)
+        {
+            spellHeader += $" {item.Level}";
+        }
+        <h3><a href="#">@spellHeader</a></h3>
+        <div>
+            <p>
+                @Html.Raw(item.Description)
+            </p>
+        </div>
+    }
+</div>

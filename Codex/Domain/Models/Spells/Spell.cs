@@ -7,6 +7,7 @@ namespace Domain.Models.Spells
     {
         public string Name { get; set; }
         public int? Level { get; set; }
+        public Tradition Tradition { get; set; }
         public SpellType? Type { get; set; }
         public ActionType? Action { get; set; }
         public Castings? Castings { get; set; }

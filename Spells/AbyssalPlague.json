@@ -1,0 +1,19 @@
+{
+  "name": "Abyssal Plague",
+  "level": 5,
+  "tradition": "Divine, Occult",
+  "type": "Spell",
+  "action": "Normal",
+  "castings": "Somatic, Verbal",
+  "area": "Touch",
+  "targets": "One creature",
+  "traits": [
+    "Attack",
+    "Chaotic",
+    "Disease",
+    "Evil",
+    "Necromancy"
+  ],
+  "isHeightenable": false,
+  "description": "Your touch afflicts the target with Abyssal plague. The effect is based on the target’s Fortitude save.<br/><b>Success</b> –2 conditional penalty on saves vs. Abyssal plague for 1 day or she contracts it, whichever comes first.<br/><b>Critical Success</b> The target is unaffected.<br/><b>Failure</b> Afflicted with Abyssal plague at stage 1.<br/><b>Critical Failure</b> Afflicted with Abyssal plague at stage 2.<br/><b>Abyssal Plague</b> (disease) <b>Level</b> 9. The drained condition from Abyssal plague can’t be recovered until the disease is cured.<br/><b>Stage 1</b> drained 1 (1 day); <b>Stage 2</b> drained increases by 2 (1 day)."
+}
