@@ -8,7 +8,6 @@ namespace BackOffice.Models.Spells
 {
     [Flags]
     [JsonConverter(typeof(StringEnumConverter))]
-    [ModelBinder(BinderType = typeof(EnumFlagsModelBinder))]
     public enum Tradition
     {
         Arcane = 1,

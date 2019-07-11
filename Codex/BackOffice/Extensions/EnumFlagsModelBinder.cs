@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace BackOffice.Extensions
@@ -8,7 +9,6 @@ namespace BackOffice.Extensions
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
-            // Fetch value to bind.
             var value = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
             if (value != null)
             {
@@ -22,6 +22,9 @@ namespace BackOffice.Extensions
                 bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
 
                 var valueType = bindingContext.ModelType;
+                if (valueType.IsGenericType && valueType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    valueType = Nullable.GetUnderlyingType(valueType);
+
                 var model = (Enum)Enum.Parse(valueType, string.Join(",", value.Values.ToArray()));
 
                 bindingContext.Result = ModelBindingResult.Success(model);

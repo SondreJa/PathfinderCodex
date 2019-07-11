@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using BackOffice.Models;
+﻿using BackOffice.Models;
+using Domain.Models.Spells;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace BackOffice.Controllers
 {
@@ -16,6 +17,7 @@ namespace BackOffice.Controllers
     {
         private readonly HttpClient httpClient;
         private readonly string spellUri;
+        private static readonly Regex whitespaceReplacer = new Regex(@"\s+");
 
         public SpellController(HttpClient httpClient, IConfiguration configuration)
         {
@@ -51,7 +53,8 @@ namespace BackOffice.Controllers
         {
             try
             {
-                var jsonSpell = JsonConvert.SerializeObject(spell);
+                var domainSpell = MapSpell(spell);
+                var jsonSpell = JsonConvert.SerializeObject(domainSpell);
                 var content = new StringContent(jsonSpell, Encoding.UTF8, "application/json");
                 await httpClient.PostAsync($"{spellUri}/api/Spells", content);
                 return RedirectToAction(nameof(Index));
@@ -106,6 +109,41 @@ namespace BackOffice.Controllers
             {
                 return View();
             }
+        }
+
+        private Spell MapSpell(SpellViewModel spell)
+        {
+            var jsonViewModel = JsonConvert.SerializeObject(spell);
+            var domainSpell = JsonConvert.DeserializeObject<Spell>(jsonViewModel);
+
+            var viewModelTraits = domainSpell.Traits.FirstOrDefault();
+            viewModelTraits = ReplaceWhitespace(viewModelTraits, "");
+            domainSpell.Traits = viewModelTraits.Split(",");
+
+            var castingDuration = new CastingDuration
+            {
+                Interval = spell?.CastingInterval,
+                DurationType = (DurationType?)spell.CastingDurationType
+            };
+
+            var duration = new Duration
+            {
+                Interval = spell.DurationInterval,
+                DurationType = (DurationType?)spell.DurationType,
+                IsDismissable = spell.IsDismissable,
+                IsConcentration = spell.IsConcentration
+            };
+
+            domainSpell.CastingDuration = castingDuration;
+            domainSpell.Duration = duration;
+            return domainSpell;
+        }
+
+        private static string ReplaceWhitespace(string input, string replacement)
+        {
+            if (input == null)
+                return null;
+            return whitespaceReplacer.Replace(input, replacement);
         }
     }
 }
