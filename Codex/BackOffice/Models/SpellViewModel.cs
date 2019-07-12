@@ -9,10 +9,14 @@ namespace BackOffice.Models
     {
         public string Name { get; set; }
         public int? Level { get; set; }
+        public Rarity? Rarity { get; set; }
 
         [ModelBinder(BinderType = typeof(EnumFlagsModelBinder))]
         public Tradition? Tradition { get; set; }
         public SpellType? Type { get; set; }
+
+        [ModelBinder(BinderType = typeof(EnumFlagsModelBinder))]
+        public Categories? Categories { get; set; }
         public ActionType? Action { get; set; }
 
         [ModelBinder(BinderType = typeof(EnumFlagsModelBinder))]
@@ -26,6 +30,19 @@ namespace BackOffice.Models
         [ModelBinder(BinderType = typeof(EnumFlagsModelBinder))]
         public RangeType? Area { get; set; }
         public string Targets { get; set; }
+
+        [ModelBinder(BinderType = typeof(EnumFlagsModelBinder))]
+        public SaveTarget? SaveTarget { get; set; }
+
+        [ModelBinder(BinderType = typeof(EnumFlagsModelBinder))]
+        public DamageTypes? DamageTypes { get; set; }
+
+        [ModelBinder(BinderType = typeof(EnumFlagsModelBinder))]
+        public Conditions? CauseConditions { get; set; }
+
+        [ModelBinder(BinderType = typeof(EnumFlagsModelBinder))]
+        public Conditions? CureConditions { get; set; }
+
         public string Trigger { get; set; }
         
         // Duration

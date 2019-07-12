@@ -14,7 +14,7 @@ namespace BackOffice.Extensions
     // Made .NET Core compatible
     public static class CheckBoxesForEnumFlagsModelHtmlHelper
     {
-        public static IHtmlContent CheckBoxesForEnumFlagsFor<TModel, TEnum>(this IHtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TEnum>> expression)
+        public static IHtmlContent CheckBoxesForEnumFlagsFor<TModel, TEnum>(this IHtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TEnum>> expression, int numColumns = 1)
         {
             var modelExplorer = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData, htmlHelper.MetadataProvider);
             var metadata = modelExplorer.Metadata;
@@ -31,12 +31,18 @@ namespace BackOffice.Extensions
             }
 
             var sb = new StringBuilder();
+            var columns = 0;
             foreach (Enum item in Enum.GetValues(enumModelType))
             {
                 if (Convert.ToInt64(item) != 0)
                 {
+                    if(columns == 0)
+                        sb.AppendLine("<div class=\"row no-mp\">");
+
                     var templateInfo = htmlHelper.ViewData.TemplateInfo;
                     var id = $"{fullHtmlFieldName}_{templateInfo.GetFullHtmlFieldName(item.ToString())}";
+                    var field = item.GetType().GetField(item.ToString());
+                    var displayString = field.GetCustomAttributes(typeof(DisplayAttribute), true).FirstOrDefault() is DisplayAttribute display ? display.Name : item.ToString();
 
                     var checkbox = new TagBuilder("input")
                     {
@@ -45,6 +51,7 @@ namespace BackOffice.Extensions
                             ["id"] = id,
                             ["name"] = fullHtmlFieldName,
                             ["type"] = "checkbox",
+                            ["class"] = "flagsCheckbox",
                             ["value"] = item.ToString()
                         }
                     };
@@ -53,14 +60,16 @@ namespace BackOffice.Extensions
 
                     sb.AppendLine(GetString(checkbox));
 
-                    var label = new TagBuilder("label") { Attributes = { ["for"] = id } };
-                    var field = item.GetType().GetField(item.ToString());
-
-                    var displayString = field.GetCustomAttributes(typeof(DisplayAttribute), true).FirstOrDefault() is DisplayAttribute display ? display.Name : item.ToString();
+                    var label = new TagBuilder("label") { Attributes = { ["for"] = id, ["class"] = "flagsLabel col no-mp", ["id"] = id + "_Label" } };
                     label.InnerHtml.SetContent(displayString);
 
                     sb.AppendLine(GetString(label));
-                    sb.AppendLine("<br />");
+                    if (++columns >= numColumns)
+                    {
+                        columns = 0;
+                        //sb.AppendLine("<br />");
+                        sb.AppendLine("</div>");
+                    }
                 }
             }
 

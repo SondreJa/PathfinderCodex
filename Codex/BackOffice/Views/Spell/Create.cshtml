@@ -20,75 +20,119 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div>
-                <table class="createSpellTable">
-                    <tr>
-                        <td>
-                            <label asp-for="Tradition" class="control-label"></label>
-                            <br />
-                            @Html.CheckBoxesForEnumFlagsFor(model => model.Tradition)
-                        </td>
-                        <td>
-                            <label asp-for="Castings" class="control-label"></label>
-                            <br />
-                            @Html.CheckBoxesForEnumFlagsFor(model => model.Castings)
-                        </td>
-                        <td>
-                            <div>
-                                <select id="spellType" asp-for="Type" asp-items="Html.GetEnumSelectList<SpellType>()">
-                                    <option selected="selected" value="">Spell type</option>
-                                </select>
-                            </div>
-                            <br />
-                            <div>
-                                <select id="actionType" asp-for="Action" asp-items="Html.GetEnumSelectList<ActionType>()">
-                                    <option selected="selected" value="">Action type</option>
-                                </select>
-                            </div>
-                            <br />
-                            @* Casting Duration *@
-                            <div class="form-group" id="castingDuration">
-                                <label>Casting Duration</label>
-                                <input asp-for="CastingInterval" class="form-control" type="number" style="width:75px" />
-                                <span asp-validation-for="CastingInterval" class="text-danger"></span>
-                                <br />
-                                <select asp-for="CastingDurationType" asp-items="Html.GetEnumSelectList<DurationType>()">
-                                    <option selected="selected" value="">Casting duration type</option>
-                                </select>
-                            </div>
-                        </td>
-                        <td>
-                            <label asp-for="Area" class="control-label"></label>
-                            <br />
-                            @Html.CheckBoxesForEnumFlagsFor(model => model.Area)
-                        </td>
-                        <td>
-                            <label asp-for="Range" class="control-label"></label>
-                            <input asp-for="Range" class="form-control" type="number" style="width:75px" />
-                            <span asp-validation-for="Range" class="text-danger"></span>
-                        </td>
-                        <td>
-                            @* Duration *@
-                            <div class="form-group">
-                                <label>Duration</label>
-                                <select id="durationType" asp-for="DurationType" asp-items="Html.GetEnumSelectList<DurationType>()">
-                                    <option selected="selected" value="">Duration</option>
-                                </select>
-                                <div id="durationBlock">
-                                    <input asp-for="DurationInterval" class="form-control" type="number" style="width:75px" />
-                                    <span asp-validation-for="DurationInterval" class="text-danger"></span>
-
-                                    <label asp-for="IsDismissable" class="control-label">Is the spell dismissable?</label>
-                                    <label><input asp-for="IsDismissable" value="true" type="radio" />True</label>
-                                    <label><input asp-for="IsDismissable" value="false" type="radio" />False</label>
+                <div id="accordion">
+                    <h3><a href="#">Basic information</a></h3>
+                    <div>
+                        <table class="createSpellTable">
+                            <tr>
+                                <td>
+                                    <label asp-for="Tradition" class="control-label"></label>
                                     <br />
-                                    <label asp-for="IsConcentration" class="control-label">Is the spell concentration?</label>
-                                    <label><input asp-for="IsConcentration" value="true" type="radio" />True</label>
-                                    <label><input asp-for="IsConcentration" value="false" type="radio" />False</label>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                                    <div class="flags-div">
+                                        @Html.CheckBoxesForEnumFlagsFor(model => model.Tradition)
+                                    </div>
+                                </td>
+                                <td class="flags-div">
+                                    <label asp-for="Castings" class="control-label"></label>
+                                    <br />
+                                    <div class="flags-div">
+                                        @Html.CheckBoxesForEnumFlagsFor(model => model.Castings)
+                                    </div>
+                                </td>
+                                <td>
+                                    <label asp-for="Categories" class="control-label"></label>
+                                    <br />
+                                    <div class="flags-div">
+                                        @Html.CheckBoxesForEnumFlagsFor(model => model.Categories)
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <select id="spellType" asp-for="Type" asp-items="Html.GetEnumSelectList<SpellType>()">
+                                            <option selected="selected" value="">Spell type</option>
+                                        </select>
+                                    </div>
+                                    <br />
+                                    <div>
+                                        <select id="actionType" asp-for="Action" asp-items="Html.GetEnumSelectList<ActionType>()">
+                                            <option selected="selected" value="">Action type</option>
+                                        </select>
+                                    </div>
+                                    <br />
+                                    @* Casting Duration *@
+                                    <div class="form-group" id="castingDuration">
+                                        <label>Casting Duration</label>
+                                        <input asp-for="CastingInterval" class="form-control" type="number" style="width:75px" />
+                                        <span asp-validation-for="CastingInterval" class="text-danger"></span>
+                                        <br />
+                                        <select asp-for="CastingDurationType" asp-items="Html.GetEnumSelectList<DurationType>()">
+                                            <option selected="selected" value="">Casting duration type</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td class="flags-div">
+                                    <label asp-for="Area" class="control-label"></label>
+                                    <br />
+                                    @Html.CheckBoxesForEnumFlagsFor(model => model.Area, 2)
+                                </td>
+                                <td>
+                                    <label asp-for="Range" class="control-label"></label>
+                                    <input asp-for="Range" class="form-control" type="number" style="width:75px" />
+                                    <span asp-validation-for="Range" class="text-danger"></span>
+                                </td>
+                                <td>
+                                    @* Duration *@
+                                    <div class="form-group">
+                                        <label>Duration</label>
+                                        <select id="durationType" asp-for="DurationType" asp-items="Html.GetEnumSelectList<DurationType>()">
+                                            <option selected="selected" value="">Duration</option>
+                                        </select>
+                                        <div id="durationBlock">
+                                            <input asp-for="DurationInterval" class="form-control" type="number" style="width:75px" />
+                                            <span asp-validation-for="DurationInterval" class="text-danger"></span>
+
+                                            <label asp-for="IsDismissable" class="control-label">Is the spell dismissable?</label>
+                                            <label><input asp-for="IsDismissable" value="true" type="radio" />True</label>
+                                            <label><input asp-for="IsDismissable" value="false" type="radio" />False</label>
+                                            <br />
+                                            <label asp-for="IsConcentration" class="control-label">Is the spell concentration?</label>
+                                            <label><input asp-for="IsConcentration" value="true" type="radio" />True</label>
+                                            <label><input asp-for="IsConcentration" value="false" type="radio" />False</label>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <h3><a href="#">Damage and Conditions</a></h3>
+                    <div>
+                        <table class="createSpellTable">
+                            <tr>
+                                <td>
+                                    <div class="flags-div">
+                                        <label asp-for="DamageTypes" class="control-label">Damage Types</label>
+                                        <br />
+                                        @Html.CheckBoxesForEnumFlagsFor(model => model.DamageTypes, 2)
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flags-div">
+                                        <label asp-for="CauseConditions" class="control-label">Cause Conditions</label>
+                                        <br />
+                                        @Html.CheckBoxesForEnumFlagsFor(model => model.CauseConditions, 3)
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flags-div">
+                                        <label asp-for="CureConditions" class="control-label">Cure Conditions</label>
+                                        <br />
+                                        @Html.CheckBoxesForEnumFlagsFor(model => model.CureConditions, 3)
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group" id="levelBlock">
@@ -153,5 +197,45 @@
     }
     .col-md-4{
         min-width: 85%;
+    }
+    .flagsCheckbox{
+        display:none;
+    }
+
+    .flags-div{
+        display:block;
+    }
+
+    .row
+    {
+        display:flex;
+    }
+
+    .flagsLabel:nth-child(4){
+        margin:auto!important;
+        padding:0px 8px;
+    }
+
+    .no-mp{
+        margin: 0;
+        padding: 0;
+    }
+
+    .flagsLabel {
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+        min-width: 50px;
+        border: 1px solid #ddd;
+        margin:2px 5px;
+        line-height: 2em;
+        cursor: pointer;
+        background-color:#ffe6e6;
+        user-select:none;
+        left:0;
+    }
+
+    .flagsLabel:hover{
+        transform:scale(1.2);
     }
 </style>
