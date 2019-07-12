@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<BackOffice.Models.SpellViewModel>
 @using BackOffice.Models.Spells
+@using BackOffice.Extensions;
+@using BackOffice.Utility;
+@using System.Text;
+@using System.Linq;
 
 @{
     ViewData["Title"] = "Index";
@@ -10,19 +14,160 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<div id="accordion">
-    @foreach(var item in Model)
-    {
-        string spellHeader = $"{item.Name} | {item.Type}";
-        if (item.Type != SpellType.Cantrip)
+
+@{ 
+    var originalModel = Model;
+}
+
+<div class="spellOptions">
+    <div id="spellLevelOptions">
+        @for (int i = 0; i <= 10; i++)
         {
-            spellHeader += $" {item.Level}";
+            var spellLevelId = $"{i}_SpellLevel";
+            var spellLevelIdLabel = $"{spellLevelId}_Label";
+            var spellLevelName = i == 0 ? "Cantrip" : $"Level {i}";
+
+            <input type="checkbox" class="spellLevelCheckbox" id=@spellLevelId />
+            <label class="spellLevelLabel" id="@spellLevelIdLabel" for="@spellLevelId">@spellLevelName</label>
         }
-        <h3><a href="#">@spellHeader</a></h3>
-        <div>
-            <p>
-                @Html.Raw(item.Description)
-            </p>
+    </div>
+</div>
+
+@{
+    var groupedSpells = Model.Where(s => s.Level != null)
+        .OrderBy(s => s.Name)
+        .GroupBy(s => s.Level)
+        .OrderBy(group => group.Key);
+
+    foreach (var group in groupedSpells)
+    {
+        var header = group.Key == 0 ? "Cantrip" : $"Level {group.Key}";
+        <h3>@header</h3>
+        <div class="accordion">
+            @foreach (var spell in group)
+            {
+                string spellHeader = $"{spell.Name} | {spell.Type}";
+                if (spell.Type != SpellType.Cantrip)
+                {
+                    spellHeader += $" {spell.Level}";
+                }
+                <h3><a href="#">@spellHeader</a></h3>
+                <div>
+                    <div class="spellInformation">
+                        <div class="spellCasting">
+                            <b>Casting</b>
+                            @if (spell.Action == ActionType.Long)
+                            {
+                                var castingDuration = $"{spell.CastingInterval} {spell.CastingDurationType}";
+                                if (spell.CastingInterval > 1)
+                                {
+                                    castingDuration += "s";
+                                }
+                                var castings = "";
+                                foreach (var casting in spell.Castings.GetFlags<Castings>())
+                                {
+                                    castings += $"{casting}, ";
+                                }
+                                castings = castings.Substring(0, castings.Length - 2);
+                                <span>@castingDuration (@castings)</span>
+                            }
+                            else if (spell.Action != null)
+                            {
+                                @foreach (var casting in spell.Castings.GetFlags<Castings>())
+                                {
+                                    var imgSrc = ImageUtility.GetCastingImage(spell.Action);
+                                    <span><img src=@imgSrc asp-append-version="true" width="20" height="20" />@casting Casting </span>
+                                }
+                            }
+                        </div>
+                        <div class="spellRange">
+                            @if (spell.Area == RangeType.Aura ||
+                           spell.Area == RangeType.Burst ||
+                           spell.Area == RangeType.Cone)
+                            {
+                                <b>Area </b><span>@spell.Range-foot @spell.Area.ToString().ToLower()</span>
+                            }
+                            else if (spell.Area == RangeType.Line ||
+                                spell.Area == RangeType.Target)
+                            {
+                                <b>Range </b><span>@spell.Range feet</span>
+                            }
+                            else if (spell.Area == RangeType.Touch)
+                            {
+                                <b>Range </b><span>touch</span>
+                            }
+
+                            @if (!string.IsNullOrEmpty(spell.Targets))
+                            {
+                                <b>Targets </b><span>@spell.Targets</span>
+                            }
+                        </div>
+                        @if (spell.DurationType != null)
+                        {
+                            <div class="duration">
+                                @{
+                                    var durationString = new StringBuilder();
+                                    if (spell.IsConcentration == true)
+                                    {
+                                        durationString.Append("concentration");
+                                    }
+                                    if (spell.DurationInterval > 0)
+                                    {
+                                        if (spell.IsConcentration == true)
+                                        {
+                                            durationString.Append(", ");
+                                        }
+                                        durationString.Append($"{spell.DurationInterval} {spell.DurationType}");
+                                        if (spell.DurationInterval > 1)
+                                        {
+                                            durationString.Append("s");
+                                        }
+                                    }
+                                    if (spell.IsDismissable == true)
+                                    {
+                                        durationString.Append(" or until dismissed");
+                                    }
+                                    <b>Duration </b><span>@durationString.ToString()</span>
+                                }
+                            </div>
+                        }
+                        <div class="spellTraits">
+                            @if (spell.Traits?.Any() == true)
+                            {
+                                var traits = new StringBuilder();
+                                foreach (var trait in spell.Traits)
+                                {
+                                    traits.Append($"{trait}, ");
+                                }
+                                traits.Length -= 2;
+                                <b>Traits </b><span>@traits.ToString()</span>
+                            }
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="spellDescription">
+                        @Html.Raw(spell.Description)
+                    </div>
+                </div>
+            }
         </div>
     }
-</div>
+}
+
+<style>
+    .spellLevelCheckbox{
+        /*display:none;*/
+    }
+
+    .spellLevelLabel {
+        display: inline-block;
+        text-align: center;
+        min-width: 50px;
+        border: 1px solid #ddd;
+        margin:2px 5px;
+        line-height: 2em;
+        cursor: pointer;
+        background-color:#ffe6e6;
+        user-select:none;
+    }
+</style>

@@ -1,5 +1,7 @@
-﻿$(function () {
-    $("#accordion").accordion({ collapsible: true, heightStyle: "content" });
+﻿import { isNullOrUndefined } from "util";
+
+$(function () {
+    $(".accordion").accordion({ collapsible: true, heightStyle: "content", active:false });
 });
 
 const tableConfig = {
@@ -19,12 +21,15 @@ ClassicEditor
 });
 
 var spellTypeDropDown = document.getElementById("spellType");
-spellTypeDropDown.onchange = function () {
-    var castingDuration = document.getElementById("levelBlock");
-    castingDuration.style.display = this.value === "2" || this.value === "3" || this.value === "" ? "none" : "block";
-};
+if (!isNullOrUndefined(spellTypeDropDown)) {
+    spellTypeDropDown.onchange = function () {
+        var castingDuration = document.getElementById("levelBlock");
+        castingDuration.style.display = this.value === "2" || this.value === "3" || this.value === "" ? "none" : "block";
+    };
+}
 
 var actionTypeDropDown = document.getElementById("actionType");
+
 actionTypeDropDown.onchange = function () {
     var castingDuration = document.getElementById("castingDuration");
     var trigger = document.getElementById("triggerBlock");
@@ -38,6 +43,7 @@ durationTypeDropDown.onchange = function () {
     castingDuration.style.display = this.value === "" | this.value === "0" || this.value === "1" ? "none" : "block";
 };
 
+// CreateView checkboxes
 $(".flags-div").on("click", "label", function (e) {
     var getValue = $(this).attr("for");
     var goToParent = $(this).parents(".flags-div");
